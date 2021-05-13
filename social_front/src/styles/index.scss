@@ -1,0 +1,8 @@
+:root {
+    --dark-cyan: hsl(185, 75%, 39%);
+}
+
+body{
+    background-color: var(--dark-cyan);
+    background-image: url(../assets/bg-pattern-top.svg);
+}

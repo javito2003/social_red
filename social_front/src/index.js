@@ -1,17 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import App from './App.jsx';
+import './styles/index.css'
+import axios from 'axios'
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { getUserLocal } from "./redux/userDucks";
+import generateStore from './redux/store.js';
+const store = generateStore()
+axios.defaults.baseURL = "http://127.0.0.1:3001/api"
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+
