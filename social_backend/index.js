@@ -3,12 +3,13 @@ const morgan = require('morgan')
 const mongoose = require('mongoose');
 const colors = require('colors')
 const cors = require('cors')
-const fileUpload = require('express-fileupload')
+const dotenv = require("dotenv")
+
+dotenv.config()
 
 const app = express()
 
 app.use(cors())
-app.use(fileUpload());
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(morgan('tiny'))

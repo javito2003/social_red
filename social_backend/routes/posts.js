@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const upload = require("../middlewares/uploadphoto");
 
 //MODELS IMPORT
 const User = require("../models/user");
@@ -9,39 +10,11 @@ const Post = require("../models/post");
 const { checkAuth } = require("../middlewares/authentication");
 
 //post request - create post
-router.post("/post", checkAuth, async (req, res) => {
+router.post("/post", checkAuth,upload.single('photo'), async (req, res) => {
   try {
-    var imageRoute = "";
-    imageRoute = "src/assets/";
-
-    if (!req.files) {
-      res.send({
-        status: false,
-        message: "No file uploaded",
-      });
-    } else if (
-      req.files.file.mimetype != "image/png" &&
-      req.files.file.mimetype != "image/jpeg"
-    ) {
-      res.send({
-        status: false,
-        message: "Solo png o jpg",
-      });
-      return;
-    } else if (parseInt(req.files.file.size) > 2000000) {
-      res.send({
-        status: false,
-        message: "El archivo debe ser menor a 2 Mb",
-      });
-      return;
-    } else {
-      var uploadFile = req.files.file;
-      var extencion = getExtension(uploadFile.name);
-      var filename = makeid(10) + extencion;
-      uploadFile.mv(imageRoute + "post-images/" + filename);
 
       const description = req.body.description
-      const photo = "post-images/" + filename
+      const photo = req.file.location
       const userId = req.userData._id
 
       const toCreate = {
@@ -53,7 +26,8 @@ router.post("/post", checkAuth, async (req, res) => {
       const createPost = await Post.create(toCreate)
 
       if (createPost) {
-          const setPostInUser = await User.findOneAndUpdate({_id: userId}, {$push: {postId: createPost._id}})
+          const setPostInUser = await User.findOneAndUpdate({_id: userId}, {$push: {postsId: createPost._id}}, {runValidators: true, new: true})
+          console.log(setPostInUser);
           if (setPostInUser) {
               return res.json({
                   status: "success",
@@ -61,7 +35,6 @@ router.post("/post", checkAuth, async (req, res) => {
               })
           }
       }
-    }
   } catch (error) {
     return res.status(500).json({
       status: "error",
@@ -69,6 +42,28 @@ router.post("/post", checkAuth, async (req, res) => {
     });
   }
 });
+
+
+router.get("/posts", async(req,res) => {
+  try {
+    const findPosts = await Post.find().populate('userId')
+    if (findPosts) {
+      return res.status(200).json({
+        status: "success",
+        data: findPosts
+      })
+    }
+  } catch (error) {
+    return res.status(500).json({
+      status: "success",
+      message: error
+    })
+  }
+})
+
+
+
+
 
 /* FUNCTIONS */
 function getExtension(filename) {
@@ -86,5 +81,38 @@ function makeid(length) {
   }
   return result;
 }
+
+
+/**
+ *
+ * @param { File } object file object that will be uploaded
+ * @description - This function does the following
+ * - It uploads a file to the image bucket on Google Cloud
+ * - It accepts an object as an argument with the
+ *   "originalname" and "buffer" as keys
+ */
+
+const uploadImage = (file) => new Promise((resolve,reject) => {
+  console.log(file);
+  const { name, buffer } = file
+  console.log(name);
+  const blob = bucket.file(name)
+  console.log(blob);
+  const blobStream = blob.createWriteStream({
+    resumable: false
+  })
+  blobStream.on('finish', () => {
+    const publicUrl = format(
+      `https://storage.googleapis.com/${bucket.name}/${blob.name}`
+    )
+    resolve(publicUrl)
+  })
+  .on('error', (err) => {
+    console.log(err);
+    reject(`Unable to upload image, something went wrong`)
+  })
+  .end(buffer)
+})
+
 
 module.exports = router;

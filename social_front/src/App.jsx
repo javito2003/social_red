@@ -54,7 +54,7 @@ function App(props) {
         <Route path="/register">
           <Register />
         </Route>
-        <Route path="/profile">
+        <Route path="/profile/:id">
           <Profile />
         </Route>
         <Route path="/chat">

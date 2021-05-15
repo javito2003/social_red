@@ -5,7 +5,7 @@ const postSchema = new Schema(
   {
     description: { type: String },
     photo: { type: String, required: [true, "Image is required"] },
-    userId: { type: String, required: [true, "User is required"] },
+    userId: { type: Schema.Types.ObjectId, ref: "User" },
     comments: [
       {
         text: { type: String, required: [true, "Text required"] },
