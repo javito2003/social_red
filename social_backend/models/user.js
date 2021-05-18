@@ -9,6 +9,8 @@ const userSchema = new Schema({
     active: {type: Boolean, default: false},
     postsId: [{type: Schema.Types.ObjectId, ref: "Post"}],
     saved: [{type:Schema.Types.ObjectId, ref: "Post"}],
+    followers: [{type: Schema.Types.ObjectId, ref: "User"}],
+    following: [{type: Schema.Types.ObjectId, ref: "User"}]
 })
 
 

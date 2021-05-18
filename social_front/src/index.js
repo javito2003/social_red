@@ -6,8 +6,10 @@ import axios from 'axios'
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { getUserLocal } from "./redux/userDucks";
 import generateStore from './redux/store.js';
+
 const store = generateStore()
 axios.defaults.baseURL = "http://127.0.0.1:3001/api"
+
 
 ReactDOM.render(
   <React.StrictMode>

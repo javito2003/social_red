@@ -1,27 +1,36 @@
-const express = require('express')
-const morgan = require('morgan')
-const mongoose = require('mongoose');
-const colors = require('colors')
-const cors = require('cors')
-const dotenv = require("dotenv")
+const express = require("express");
+const morgan = require("morgan");
+const mongoose = require("mongoose");
+const colors = require("colors");
+const cors = require("cors");
+const http = require("http");
+const { Server } = require("socket.io");
+const dotenv = require("dotenv");
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
 
-app.use(cors())
-app.use(express.json())
-app.use(express.urlencoded({extended: true}))
-app.use(morgan('tiny'))
+require("./routes/websockets")(io);
 
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan("tiny"));
 
-app.listen(3001, () => {
-    console.log('API listening on port 3001');
-})
+server.listen(3001, () => {
+  console.log("API listening on port 3001");
+});
 
-
-app.use("/api", require('./routes/users'))
-app.use("/api", require('./routes/posts'))
+app.use("/api", require("./routes/users"));
+app.use("/api", require("./routes/posts"));
+app.use("/api", require("./routes/notifications"));
 
 const mongoUserName = "devuser";
 const mongoPassword = "devpassword";
@@ -46,7 +55,7 @@ var options = {
   useCreateIndex: true,
   useUnifiedTopology: true,
   useNewUrlParser: true,
-  authSource: "admin"
+  authSource: "admin",
 };
 
 try {
@@ -58,7 +67,7 @@ try {
       console.log("*******************************".green);
       console.log("\n");
     },
-    err => {
+    (err) => {
       console.log("\n");
       console.log("*******************************".red);
       console.log("    Mongo Connection Failed    ".red);

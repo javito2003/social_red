@@ -1,0 +1,56 @@
+@media screen and (orientation: portrait) {
+  .cardd {
+    background-color: white;
+    width: 700px;
+    margin-top: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    -webkit-box-shadow: 10px 5px 4px rgba(0, 0, 0, 0.07);
+            box-shadow: 10px 5px 4px rgba(0, 0, 0, 0.07);
+  }
+  .cardd-post-userimage {
+    border: 1px solid white;
+    border-radius: 50%;
+    height: 35px;
+    width: 35px;
+  }
+  .cardd-post-usernmae {
+    margin-bottom: 0.3rem;
+    font-size: 1.2rem;
+  }
+  .cardd-post-image {
+    width: 300px;
+    height: 300px;
+    margin-bottom: 30px;
+    margin-right: 100px;
+  }
+}
+
+@media screen and (orientation: landscape) {
+  .cardd {
+    background-color: white;
+    width: 700px;
+    margin-top: 50px;
+    border-radius: 8px;
+    overflow: hidden;
+    -webkit-box-shadow: 10px 5px 4px rgba(0, 0, 0, 0.07);
+            box-shadow: 10px 5px 4px rgba(0, 0, 0, 0.07);
+  }
+  .cardd-post-userimage {
+    border: 1px solid white;
+    border-radius: 50%;
+    height: 35px;
+    width: 35px;
+  }
+  .cardd-post-usernmae {
+    margin-bottom: 0.3rem;
+    font-size: 1.2rem;
+  }
+  .cardd-post-image {
+    width: 600px;
+    height: 600px;
+    margin-bottom: 30px;
+    margin-right: 100px;
+  }
+}
+/*# sourceMappingURL=post.css.map */

@@ -136,4 +136,9 @@
     font-size: 1.3rem;
   }
 }
+
+.notifications{
+  max-height: 200px;
+  overflow: auto;
+}
 /*# sourceMappingURL=login.css.map */

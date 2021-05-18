@@ -1,22 +1,47 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import "../styles/login.css";
 import { Button, Icon, IconButton } from "@material-ui/core";
 import gus from "../static/gus.jpg";
-import AddIcon from "@material-ui/icons/Add";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ChatIcon from '@material-ui/icons/Chat';
 import SendIcon from '@material-ui/icons/Send';
+import MarkunreadIcon from '@material-ui/icons/Markunread';
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
-import EventEmitter from '../utils/EventEmitter'
 import axios from 'axios'
+import socket from '../utils/ws'
+import {getNotifications} from '../redux/notifDucks'
 
 //components
 import ModalCreate from '../components/ModalCreate'
 import { Link } from "react-router-dom";
 
 const Home = () => {
+  const dispatch = useDispatch()
   const [posts, setPosts] = useState([])
+  const user = useSelector((store) => store.user.user.userData);
+  const token = useSelector((store) => store.user.user.token)
+  const notifications = useSelector(store => store.notifications.notifications)
+  
+  function readNotification(notifId){
+    let config = {
+      headers: {
+        token: token
+      },
+      params:{
+        notifId: notifId
+      }
+    }
+
+    axios.put('/notification-read', null, config)
+    .then(res => {
+      console.log(res.data);
+      dispatch(getNotifications())
+    })
+    .catch(err => {
+      console.log(err.response);
+    })
+  }
   function getPosts(){
     axios.get('/posts')
     .then(res => {
@@ -27,20 +52,17 @@ const Home = () => {
       console.log(err.response);
     })
   }
-
   React.useEffect(() => {
     getPosts()
-    function recived(){
-      console.log('Recived');
-    }
-    const listener = EventEmitter.addListener('getPosts', recived )
-    return () => {
-      listener.remove()
+    if (user) {
+      socket.on('usernames', data => {
+        console.log(data);
+      })
     }
   }, [])
   
   console.log(posts);
-  const user = useSelector((store) => store.user.user.userData);
+  
   return (
     <div>
       <div className="d-flex justify-content-center">
@@ -52,16 +74,30 @@ const Home = () => {
               <div className="card-footer-options mx-2">
                 <ModalCreate/>
               </div>
-              <div className="card-footer-options">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  startIcon={<AddIcon />}
-                >
-                  Create post
-                </Button>
+              <div className="card-footer-options mx-2">
+                <Link style={{textDecoration: 'none'}} to={`/profile/${user._id}`}>
+                  <Button variant="contained" color="secondary">Go to the profile</Button>
+                
+                </Link>
               </div>
             </div>
+          </div>
+        </div>
+        <div className="card my-3 mx-1">
+          <h2 className="text-center my-2">Notifications</h2>
+          <hr />
+          <div className="notifications">
+            {
+              <div>
+                {
+                  notifications.length === 0 ? <p className="text-center">You don't have notifcations</p> :
+                  notifications.map(item => (
+                    
+                    <div key={item._id} className="mx-4"> {item.description} <IconButton onClick={() => readNotification(item._id)}><MarkunreadIcon/></IconButton></div>
+                ))
+                }
+              </div>
+            }  
           </div>
         </div>
       </div>
@@ -80,7 +116,7 @@ const Home = () => {
                 className="card-post-user"
                 style={{ display: "inline-block" }}
               >
-                <Link style={{textDecorationLine: "none", color: "#000"}} to={`/profile/${row._id}`}>
+                <Link style={{textDecorationLine: "none", color: "#000"}} to={`/profile/${row.userId._id}`}>
                 {
                   user.name === row.userId.name ? 'me' : row.userId.name
                 }

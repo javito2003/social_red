@@ -10,7 +10,7 @@ const Post = require("../models/post");
 const { checkAuth } = require("../middlewares/authentication");
 
 //post request - create post
-router.post("/post", checkAuth,upload.single('photo'), async (req, res) => {
+router.post("/post", checkAuth,upload.single('file'), async (req, res) => {
   try {
 
       const description = req.body.description
@@ -51,6 +51,24 @@ router.get("/posts", async(req,res) => {
       return res.status(200).json({
         status: "success",
         data: findPosts
+      })
+    }
+  } catch (error) {
+    return res.status(500).json({
+      status: "success",
+      message: error
+    })
+  }
+})
+
+
+router.get('/post', async(req,res) => {
+  try {
+    const findPost = await Post.findOne({_id: req.query.postId}).populate('userId')
+    if (findPost) {
+      return res.json({
+        status: "success",
+        data: findPost
       })
     }
   } catch (error) {

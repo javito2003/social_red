@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import React from "react";
-import PropTypes from "prop-types";
-import useScrollTrigger from "@material-ui/core/useScrollTrigger";
+import { getNotifications } from "./redux/notifDucks";
 
 //components
 import Navbar from "./components/Navbar.jsx";
@@ -12,38 +11,29 @@ import Login from "./views/Login";
 import Profile from "./views/Profile";
 import Register from "./views/Register";
 import Chat from "./views/Chat";
-
-function ElevationScroll(props) {
-  const { children, window } = props;
-  // Note that you normally won't need to set the window ref as useScrollTrigger
-  // will default to window.
-  // This is only being set here because the demo is in an iframe.
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 0,
-    target: window ? window() : undefined,
-  });
-
-  return React.cloneElement(children, {
-    elevation: trigger ? 4 : 0,
-  });
-}
-
-ElevationScroll.propTypes = {
-  children: PropTypes.element.isRequired,
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
-  window: PropTypes.func,
-};
+import Post from "./views/Post.jsx";
+import { useSelector, useDispatch } from "react-redux";
+import socket from "./utils/ws.js";
 
 function App(props) {
+  const dispatch = useDispatch();
+  const user = useSelector((store) => store.user.user.userData);
+  const token = useSelector((store) => store.user.user.token);
+
+  React.useEffect(() => {
+    if (user !== undefined) {
+      function getNotif() {
+        dispatch(getNotifications());
+      }
+      socket.emit("new-user", user);
+      socket.on("followyou", getNotif);
+      socket.on("newpost", getNotif);
+    }
+  }, []);
+
   return (
     <Router>
-      <ElevationScroll {...props}>
-        <Navbar />
-      </ElevationScroll>
+      <Navbar />
       <Switch>
         <Route path="/" exact>
           <Home />
@@ -56,6 +46,9 @@ function App(props) {
         </Route>
         <Route path="/profile/:id">
           <Profile />
+        </Route>
+        <Route path="/post/:id">
+          <Post />
         </Route>
         <Route path="/chat">
           <Chat />

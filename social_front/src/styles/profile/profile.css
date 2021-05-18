@@ -1,0 +1,82 @@
+.cardd {
+  background-color: white;
+  width: 700px;
+  border-radius: 8px;
+  overflow: hidden;
+  -webkit-box-shadow: 10px 5px 4px rgba(0, 0, 0, 0.07);
+          box-shadow: 10px 5px 4px rgba(0, 0, 0, 0.07);
+}
+
+.cardd-header {
+  width: 100%;
+  display: block;
+}
+
+.cardd-body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.cardd-body-img {
+  border: 5px solid white;
+  border-radius: 50%;
+  height: 200px;
+  width: 200px;
+  margin-top: calc(-90px - 5px);
+  background-color: white;
+}
+
+.cardd-footer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  border-bottom: 1px solid rgba(153, 153, 153, 0.356);
+}
+
+.cardd-footer-data {
+  text-align: center;
+}
+
+.cardd-footer-data h3 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  color: black;
+}
+
+.cardd-footer-data p {
+  letter-spacing: 1px;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  font-weight: 400;
+  color: gray;
+}
+
+.cardd-posts {
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 50px;
+  margin-bottom: 50px;
+}
+
+.cardd-posts-img {
+  height: 200px;
+  width: 200px;
+  border-radius: 5px;
+}
+
+.cardd-posts-img:hover {
+  opacity: 0.3;
+}
+/*# sourceMappingURL=profile.css.map */
